@@ -18,8 +18,14 @@ def create_question(question_text, days):
 
 
 class QuestionModelTests(TestCase):
-
+    """
+    Tests for the Question model.
+    """
     def test_was_published_recently_with_future_question(self):
+        """
+        was_published_recently() returns False for questions whose pub_date
+        is in the future.
+        """
         time = timezone.now() + datetime.timedelta(days=30)
         future_question = Question(pub_date=time)
         self.assertIs(future_question.was_published_recently(), False)
@@ -44,6 +50,10 @@ class QuestionModelTests(TestCase):
 
 
 class QuestionIndexViewTests(TestCase):
+    """
+    Tests for the IndexView, which displays the list of questions.
+    """
+
     def test_no_questions(self):
         """
         If no questions exist, an appropriate message is displayed.
@@ -102,6 +112,9 @@ class QuestionIndexViewTests(TestCase):
 
 
 class QuestionDetailViewTests(TestCase):
+    """
+    Tests  for the DetailView, which displays the details of a question.
+    """
     def test_future_question(self):
         """
         The detail view of a question with a pub_date in the future
@@ -124,6 +137,9 @@ class QuestionDetailViewTests(TestCase):
 
 
 class QuestionResultsViewTests(TestCase):
+    """
+    Test suite for the ResultsView, which displays the results of a question.
+    """
     def test_future_question(self):
         """
         The results view of a question with a pub_date in the future
