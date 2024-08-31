@@ -48,6 +48,35 @@ class QuestionModelTests(TestCase):
         recent_question = Question(pub_date=time)
         self.assertIs(recent_question.was_published_recently(), True)
 
+    def test_is_published_with_future_pub_date(self):
+        """Test that is_published returns False for a future pub_date."""
+        future_question = create_question(question_text="Future question", days=5)
+        self.assertIs(future_question.is_published(), False)
+
+    def test_is_published_with_past_pub_date(self):
+        """Test that is_published returns True for a past pub_date."""
+        past_question = create_question(question_text="Past question", days=-5)
+        self.assertIs(past_question.is_published(), True)
+
+    def test_can_vote_before_pub_date(self):
+        """Cannot vote before the question's pub_date."""
+        question = create_question("Future Question", days=5)
+        self.assertIs(question.can_vote(), False)
+
+    def test_can_vote_between_pub_and_end_date(self):
+        """Can vote between pub_date and end_date."""
+        question = create_question("Active Question", days=-1)
+        question.end_date = timezone.now() + datetime.timedelta(days=5)
+        question.save()
+        self.assertIs(question.can_vote(), True)
+
+    def test_cannot_vote_after_end_date(self):
+        """Cannot vote if the end_date is in the past."""
+        question = create_question("Expired Question", days=-10)
+        question.end_date = timezone.now() - datetime.timedelta(days=1)
+        question.save()
+        self.assertIs(question.can_vote(), False)
+
 
 class QuestionIndexViewTests(TestCase):
     """
