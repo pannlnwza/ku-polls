@@ -58,6 +58,11 @@ class QuestionModelTests(TestCase):
         past_question = create_question(question_text="Past question", days=-5)
         self.assertIs(past_question.is_published(), True)
 
+    def test_is_published_with_now_pub_date(self):
+        """Test that is_published returns True when pub_date is now."""
+        now_question = create_question(question_text="Now question", days=0)
+        self.assertIs(now_question.is_published(), True)
+
     def test_can_vote_before_pub_date(self):
         """Cannot vote before the question's pub_date."""
         question = create_question("Future Question", days=5)
@@ -74,6 +79,20 @@ class QuestionModelTests(TestCase):
         """Cannot vote if the end_date is in the past."""
         question = create_question("Expired Question", days=-10)
         question.end_date = timezone.now() - datetime.timedelta(days=1)
+        question.save()
+        self.assertIs(question.can_vote(), False)
+
+    def test_can_vote_exactly_at_end_date(self):
+        """Test that can_vote returns False when the end_date is exactly now."""
+        question = create_question("Question ending now", days=-1)
+        question.end_date = timezone.now()
+        question.save()
+        self.assertIs(question.can_vote(), False)
+
+    def test_can_vote_edge_case_after_end_date(self):
+        """Test that can_vote returns False when voting is attempted just after the end_date."""
+        question = create_question("Question Just After End Date", days=-1)
+        question.end_date = timezone.now() - datetime.timedelta(seconds=1)
         question.save()
         self.assertIs(question.can_vote(), False)
 
@@ -163,6 +182,15 @@ class QuestionDetailViewTests(TestCase):
         url = reverse('polls:detail', args=(past_question.id,))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+    def test_redirect_if_poll_closed(self):
+        """Test that if a poll is closed, it redirects to index and shows an error message."""
+        # Create a question that has ended voting period
+        closed_question = create_question("Closed Question", days=-10)
+        closed_question.end_date = timezone.now() + datetime.timedelta(days=-1)
+        closed_question.save()
+        response = self.client.get(reverse('polls:detail', args=(closed_question.id,)))
+        self.assertRedirects(response, reverse('polls:index'))
 
 
 class QuestionResultsViewTests(TestCase):
