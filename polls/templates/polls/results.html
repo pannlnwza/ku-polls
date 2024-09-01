@@ -1,9 +1,75 @@
-<h1>{{ question.question_text }}</h1>
+{% load static %}
 
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} vote{{ choice.votes|pluralize }}</li>
-{% endfor %}
-</ul>
 
-<a href="{% url 'polls:detail' question.id %}">Vote again?</a>
+<head>
+    <title>Poll Results</title>
+    <style>
+        table {
+            width: 20%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .results-table {
+            width: 20%;
+            border-collapse: collapse;
+            margin-top: 20px; /* Space above the table */
+            margin-bottom: 20px; /* Space below the table */
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #c4c4c4;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #e3e3e3;
+        }
+
+        .results-table td {
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+    </style>
+</head>
+
+
+
+<body>
+    <h1>Results for "{{ question.question_text }}"</h1>
+
+    <!-- Results Table -->
+    <table class="results-table">
+        <thead>
+            <tr>
+                <th>Choice</th>
+                <th>Votes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for choice in question.choice_set.all %}
+            <tr>
+                <td>{{ choice.choice_text }}</td>
+                <td>{{ choice.votes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+<div class="card-actions">
+    <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
+</div>
+
+</body>

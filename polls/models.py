@@ -12,14 +12,25 @@ class Question(models.Model):
     Attributes:
         question_text (str): The text of the question.
         pub_date (datetime): The date and time when the question was published.
+        end_date (datetime): The date and time when the question will be ended.
     """
+
     question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateTimeField('date published', default=timezone.now)
+    end_date = models.DateTimeField('date ended', null=True, blank=True)
+
+    def is_published(self):
+        """Returns True if the current date is on or after the pub_date."""
+        return timezone.now() >= self.pub_date
+
+    def can_vote(self):
+        """Returns True if voting is allowed."""
+        now = timezone.now()
+        return (self.pub_date <= now and
+                (self.end_date is None or now <= self.end_date))
 
     def __str__(self) -> str:
-        """
-        Returns the string of the question.
-        """
+        """Returns the string of the question."""
         return str(self.question_text)
 
     @admin.display(
@@ -32,7 +43,8 @@ class Question(models.Model):
         Determines if the question was published within the last day.
 
         Returns:
-            bool: True if the question was published within the last day, False otherwise.
+            bool: True if the question was published within the last day,
+                  False otherwise.
         """
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
@@ -53,9 +65,5 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
     def __str__(self) -> str:
-        """
-        Returns the string representation of the choice,
-        """
+        """Returns the string representation of the choice."""
         return str(self.choice_text)
-
-
