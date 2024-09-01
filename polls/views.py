@@ -14,8 +14,10 @@ class IndexView(generic.ListView):
 
     Attributes:
         template_name (str): The path to the template that renders the view.
-        context_object_name (str): The name of the context object used in the template.
+        context_object_name (str): The name of the context object
+                                   used in the template.
     """
+
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
@@ -37,13 +39,12 @@ class DetailView(generic.DetailView):
         model (Question): The model associated with this view.
         template_name (str): The path to the template that renders the view.
     """
+
     model = Question
     template_name = 'polls/detail.html'
 
     def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
+        """Excludes any questions that aren't published yet."""
         return Question.objects.filter(pub_date__lte=timezone.now())
 
     def get(self, request, *args, **kwargs):
@@ -52,13 +53,12 @@ class DetailView(generic.DetailView):
 
         Args:
             request: The HTTP request object.
-            question_id (int): The ID of the question being voted on.
+            self.object (int): The ID of the question being voted on.
 
         Returns:
-            HttpResponseRedirect: A redirect to the results page
-                                  if the vote is successful.
-            HttpResponse: A render of the detail page with an
-                          error message if no choice is selected.
+            HttpResponseRedirect: Redirects to the index page with an error
+                                  message if the question is not published.
+            HttpResponse: Renders the results page.
         """
         # Get the question object
         self.object = self.get_object()
@@ -68,8 +68,8 @@ class DetailView(generic.DetailView):
             messages.error(request, "This poll is closed.")
             return redirect('polls:index')
 
-        # If voting is allowed, continue with the normal process
-        return self.render_to_response(self.get_context_data(object=self.object))
+        return self.render_to_response(self.get_context_data(
+                                        object=self.object))
 
 
 class ResultsView(generic.DetailView):
@@ -80,6 +80,7 @@ class ResultsView(generic.DetailView):
         model (Question): The model associated with this view.
         template_name (str): The path to the template that renders the view.
     """
+
     model = Question
     template_name = 'polls/results.html'
 
@@ -89,16 +90,17 @@ class ResultsView(generic.DetailView):
 
         Args:
             request: The HTTP request object.
-            *args: Additional positional arguments.
-            **kwargs: Additional keyword arguments.
 
         Returns:
-            HttpResponse: Renders the results page or redirects to the index with an error message.
+            HttpResponseRedirect: Redirects to the index page with an error
+                                  message if the question is not published.
+            HttpResponse: Renders the results page.
         """
         try:
             self.object = get_object_or_404(Question, pk=kwargs["pk"])
         except Http404:
-            messages.error(request, f"Poll number {kwargs['pk']} does not exist.")
+            messages.error(request,
+                           f"Poll number {kwargs['pk']} does not exist.")
             return redirect("polls:index")
 
         # Return 404 if the question is not published
@@ -125,7 +127,7 @@ def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
 
     if not question.can_vote():
-        messages.error(request, f"This poll is unavailable.")
+        messages.error(request, "This poll is unavailable.")
         return redirect("polls:index")
 
     try:
