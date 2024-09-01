@@ -1,8 +1,9 @@
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+from django.contrib import messages
 
 from .models import Choice, Question
 
@@ -45,6 +46,31 @@ class DetailView(generic.DetailView):
         """
         return Question.objects.filter(pub_date__lte=timezone.now())
 
+    def get(self, request, *args, **kwargs):
+        """
+        Get the question object and render the template.
+
+        Args:
+            request: The HTTP request object.
+            question_id (int): The ID of the question being voted on.
+
+        Returns:
+            HttpResponseRedirect: A redirect to the results page
+                                  if the vote is successful.
+            HttpResponse: A render of the detail page with an
+                          error message if no choice is selected.
+        """
+        # Get the question object
+        self.object = self.get_object()
+
+        # Check if voting is allowed
+        if not self.object.can_vote():
+            messages.error(request, "This poll is closed.")
+            return redirect('polls:index')
+
+        # If voting is allowed, continue with the normal process
+        return self.render_to_response(self.get_context_data(object=self.object))
+
 
 class ResultsView(generic.DetailView):
     """
@@ -57,11 +83,29 @@ class ResultsView(generic.DetailView):
     model = Question
     template_name = 'polls/results.html'
 
-    def get_queryset(self):
+    def get(self, request, *args, **kwargs):
         """
-        Excludes any questions that aren't published yet.
+        Handles GET requests for displaying the results of a question.
+
+        Args:
+            request: The HTTP request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            HttpResponse: Renders the results page or redirects to the index with an error message.
         """
-        return Question.objects.filter(pub_date__lte=timezone.now())
+        try:
+            self.object = get_object_or_404(Question, pk=kwargs["pk"])
+        except Http404:
+            messages.error(request, f"Poll number {kwargs['pk']} does not exist.")
+            return redirect("polls:index")
+
+        # Return 404 if the question is not published
+        if not self.object.is_published():
+            raise Http404("Poll results are not available.")
+
+        return render(request, self.template_name, {"question": self.object})
 
 
 def vote(request, question_id):
@@ -73,10 +117,17 @@ def vote(request, question_id):
         question_id (int): The ID of the question being voted on.
 
     Returns:
-        HttpResponseRedirect: A redirect to the results page if the vote is successful.
-        HttpResponse: A render of the detail page with an error message if no choice is selected.
+        HttpResponseRedirect: A redirect to the results page
+                              if the vote is successful.
+        HttpResponse: A render of the detail page with an
+                      error message if no choice is selected.
     """
     question = get_object_or_404(Question, pk=question_id)
+
+    if not question.can_vote():
+        messages.error(request, f"This poll is unavailable.")
+        return redirect("polls:index")
+
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
@@ -88,4 +139,5 @@ def vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+        return HttpResponseRedirect(reverse('polls:results',
+                                            args=(question.id,)))

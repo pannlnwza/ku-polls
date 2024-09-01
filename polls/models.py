@@ -14,20 +14,20 @@ class Question(models.Model):
         pub_date (datetime): The date and time when the question was published.
     """
     question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField(default=timezone.now)
-    end_date = models.DateTimeField(null=True, blank=True)
+    pub_date = models.DateTimeField('date published', default=timezone.now)
+    end_date = models.DateTimeField('date ended', null=True, blank=True)
 
     def is_published(self):
         """
         Returns True if the question is published (current date is on or after the pub_date).
         """
-        return timezone.localtime() >= self.pub_date
+        return timezone.now() >= self.pub_date
 
     def can_vote(self):
         """
         Returns True if voting is allowed.
         """
-        now = timezone.localtime()
+        now = timezone.now()
         return self.pub_date <= now and (self.end_date is None or now <= self.end_date)
 
     def __str__(self) -> str:
