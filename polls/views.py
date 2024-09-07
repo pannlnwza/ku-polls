@@ -5,13 +5,15 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 
-from .models import Choice, Question
+import logging
+from .models import Choice, Question, Vote
 
 
 class IndexView(generic.ListView):
     """
-    Displays the list of the  published questions.
+    Displays the list of the published questions.
 
     Attributes:
         template_name (str): The path to the template that renders the view.
@@ -34,7 +36,7 @@ class IndexView(generic.ListView):
 
 class DetailView(generic.DetailView):
     """
-    Displays the details of a specific question.
+    Displays the choices for a poll and allow voting.
 
     Attributes:
         model (Question): The model associated with this view.
@@ -127,21 +129,57 @@ def vote(request, question_id):
                       error message if no choice is selected.
     """
     question = get_object_or_404(Question, pk=question_id)
+    this_user = request.user
+
+    logger = logging.getLogger('polls')
+    ip_address = get_client_ip(request)
+    logger.info(f"{this_user} logged in from {ip_address}")
 
     if not question.can_vote():
         messages.error(request, "This poll is unavailable.")
+        logger.warning(f"{this_user.username} attempted to vote on an unavailable "
+                       f"poll ({question_id}) from {ip_address}")
         return redirect("polls:index")
 
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
+        logger.error(f"No choice selected by {this_user.username} for poll {question_id} from {ip_address}")
+        # Redisplay the question voting form with an error message
         return render(request, 'polls/detail.html', {
             'question': question,
             'error_message': "You didn't select a choice.",
         })
+
+    try:
+        # Find the existing vote by this user
+        _vote = Vote.objects.get(user=this_user, choice__question=question)
+        # Decrement the vote count for the old choice
+        _vote.choice.vote_count = F('vote_count') - 1
+        _vote.choice.save()
+        # Change the vote to the new choice
+        _vote.choice = selected_choice
+        _vote.save()
+        messages.success(request, f"Your vote was changed to {selected_choice.choice_text}")
+        logger.info(f"{this_user.username} changed vote to {selected_choice.choice_text} "
+                    f"in poll {question.id} from {ip_address}")
+    except Vote.DoesNotExist:
+        # Create a new vote if the user hasn't voted yet
+        _vote = Vote.objects.create(user=this_user, choice=selected_choice)
+        messages.success(request, f"You voted for {selected_choice.choice_text}")
+        logger.info(f"{this_user.username} voted for {selected_choice.choice_text} "
+                    f"in poll {question.id} from {ip_address}")
+
+    # Increment the vote count for the new choice
+    selected_choice.vote_count = F('vote_count') + 1
+    selected_choice.save()
+    return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        return HttpResponseRedirect(reverse('polls:results',
-                                            args=(question.id,)))
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
