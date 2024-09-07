@@ -73,6 +73,22 @@ class DetailView(generic.DetailView):
         return self.render_to_response(self.get_context_data(
                                         object=self.object))
 
+    def get_context_data(self, **kwargs):
+        """Adds the previous choice of the user to the context data."""
+        context = super().get_context_data(**kwargs)
+        question = self.object
+        this_user = self.request.user
+
+        if this_user.is_authenticated:
+            try:
+                previous_vote = Vote.objects.get(user=this_user, choice__question=question)
+                context['previous_choice'] = previous_vote.choice
+            except Vote.DoesNotExist:
+                context['previous_choice'] = None
+        else:
+            context['previous_choice'] = None
+        return context
+
 
 class ResultsView(generic.DetailView):
     """
@@ -153,6 +169,7 @@ def vote(request, question_id):
     try:
         # Find the existing vote by this user
         _vote = Vote.objects.get(user=this_user, choice__question=question)
+
         # Decrement the vote count for the old choice
         _vote.choice.vote_count = F('vote_count') - 1
         _vote.choice.save()
@@ -160,7 +177,7 @@ def vote(request, question_id):
         _vote.choice = selected_choice
         _vote.save()
         messages.success(request, f"Your vote was changed "
-                         f"to {selected_choice.choice_text}")
+                         f"to {selected_choice.choice_text}.")
         logger.info(f"{this_user.username} changed vote to "
                     f"{selected_choice.choice_text} "
                     f"in poll {question.id} from {ip_address}")
@@ -168,7 +185,7 @@ def vote(request, question_id):
         # Create a new vote if the user hasn't voted yet
         _vote = Vote.objects.create(user=this_user, choice=selected_choice)
         messages.success(request, f"You voted for "
-                         f"{selected_choice.choice_text}")
+                         f"{selected_choice.choice_text}.")
         logger.info(f"{this_user.username} voted for "
                     f"{selected_choice.choice_text} "
                     f"in poll {question.id} from {ip_address}")
