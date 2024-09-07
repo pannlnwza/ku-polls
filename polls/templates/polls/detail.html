@@ -1,19 +1,25 @@
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
-<fieldset>
-    <legend><h1>{{ question.question_text }}</h1></legend>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    {% for choice in question.choice_set.all %}
-        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-    {% endfor %}
+{% extends 'polls/base.html' %}
 
-</fieldset>
-<input type="submit" value="Vote">
-</form>
+{% block title %}Poll Detail{% endblock %}
 
-<div class="card-actions">
-    <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
-    <a href="{% url 'polls:results' question.id %}" class="view-button">View Results</a>
-</div>
+{% block content %}
+    <form action="{% url 'polls:vote' question.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>{{ question.question_text }}</h1></legend>
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            {% for choice in question.choice_set.all %}
+                <input type="radio" name="choice" id="choice{{ forloop.counter }}"
+                       value="{{ choice.id }}"
+                       {% if previous_choice and choice.id == previous_choice.id %}checked{% endif %}>
+                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+            {% endfor %}
+        </fieldset>
+        <input type="submit" value="Vote">
+    </form>
 
+    <div class="card-actions">
+        <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
+        <a href="{% url 'polls:results' question.id %}" class="view-button">View Results</a>
+    </div>
+{% endblock %}

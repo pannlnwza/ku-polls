@@ -1,8 +1,7 @@
-{% load static %}
+{% extends 'polls/base.html' %}
+{% block title %}Polls Results{% endblock %}
 
-
-<head>
-    <title>Poll Results</title>
+{% block extra_head %}
     <style>
         table {
             width: 20%;
@@ -43,11 +42,11 @@
         }
 
     </style>
-</head>
+{% endblock %}
 
 
 
-<body>
+{% block content %}
     <h1>Results for "{{ question.question_text }}"</h1>
 
     <!-- Results Table -->
@@ -72,4 +71,4 @@
     <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
 </div>
 
-</body>
+{% endblock %}

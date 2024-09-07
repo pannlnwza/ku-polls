@@ -1,40 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KU Polls</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
-</head>
+{% extends 'polls/base.html' %}
+{% block title %}KU Poll{% endblock %}
 
-<body>
+{% block extra_head %}
+    <style>
+        .success {
+            padding: 10px;
+            background: green;
+            color: white;
+            display: inline-block; /* Makes the box fit the content width */
+            border-radius: 3px;
+            width: 30%;
+            text-align: center;
+        }
+        .error {
+            padding: 10px;
+            background: darkred;
+            color: white;
+            display: inline-block; /* Makes the box fit the content width */
+            border-radius: 3px;
+            width: 30%;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
 
-    <div class="container">
-        <h1 class="ku-polls">KU Polls</h1>
-
-        {% if user.is_authenticated %}
-            Welcome back, {{ user.username }}
-            <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Log Out</button>
-        {% else %}
-            Please <a href="{% url 'login' %}?next={{request.path}}">Login</a>
-        {% endif %}
-
-
-        {% if messages %}
-        <ul class="error_messages">
+{% block content %}
+<div class="container">
+    {% if messages %}
+        <ul class="messages">
             {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
+                <div class="{{ message.tags }}">{{ message }}</div>
             {% endfor %}
         </ul>
-        {% endif %}
+    {% endif %}
 
-        <div class="polls-list">
-
-            {% if latest_question_list %}
-                {% for question in latest_question_list %}
+    <div class="polls-list">
+        {% if latest_question_list %}
+            {% for question in latest_question_list %}
                 <div class="card">
                     <h2 class="card-title">{{ question.question_text }}</h2>
                     <p>Status: {{ question.can_vote|yesno:"Open ✅,Closed ❌" }}</p>
@@ -43,13 +45,10 @@
                         <a href="{% url 'polls:results' question.id %}" class="view-button">View Results</a>
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <p class="no-polls">No polls are available.</p>
-            {% endif %}
-
-        </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-polls">No polls are available.</p>
+        {% endif %}
     </div>
-</body>
-</html>
-
+</div>
+{% endblock %}
