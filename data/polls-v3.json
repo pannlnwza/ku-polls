@@ -77,7 +77,7 @@
   "fields": {
     "question": 3,
     "choice_text": "Poached",
-    "vote_count": 1
+    "vote_count": 0
   }
 },
 {
@@ -131,7 +131,7 @@
   "fields": {
     "question": 5,
     "choice_text": "Dragon",
-    "vote_count": 1
+    "vote_count": 0
   }
 },
 {
@@ -149,7 +149,7 @@
   "fields": {
     "question": 5,
     "choice_text": "Fairy",
-    "vote_count": -1
+    "vote_count": 0
   }
 },
 {
@@ -167,7 +167,7 @@
   "fields": {
     "question": 5,
     "choice_text": "Griffin",
-    "vote_count": 1
+    "vote_count": 0
   }
 },
 {
@@ -177,30 +177,6 @@
     "question": 5,
     "choice_text": "Sphinx",
     "vote_count": 0
-  }
-},
-{
-  "model": "polls.vote",
-  "pk": 3,
-  "fields": {
-    "choice": 18,
-    "user": 3
-  }
-},
-{
-  "model": "polls.vote",
-  "pk": 4,
-  "fields": {
-    "choice": 19,
-    "user": 1
-  }
-},
-{
-  "model": "polls.vote",
-  "pk": 5,
-  "fields": {
-    "choice": 8,
-    "user": 1
   }
 }
 ]
