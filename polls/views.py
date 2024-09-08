@@ -81,7 +81,8 @@ class DetailView(generic.DetailView):
 
         if this_user.is_authenticated:
             try:
-                previous_vote = Vote.objects.get(user=this_user, choice__question=question)
+                previous_vote = Vote.objects.get(user=this_user,
+                                                 choice__question=question)
                 context['previous_choice'] = previous_vote.choice
             except Vote.DoesNotExist:
                 context['previous_choice'] = None
@@ -159,7 +160,7 @@ def vote(request, question_id):
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         logger.error(f"No choice selected by {this_user.username} "
-                     f"for poll {question_id} from {ip_address}")
+                     f"for poll {question_id}")
         # Redisplay the question voting form with an error message
         return render(request, 'polls/detail.html', {
             'question': question,
@@ -179,16 +180,16 @@ def vote(request, question_id):
         messages.success(request, f"Your vote was changed "
                          f"to {selected_choice.choice_text}.")
         logger.info(f"{this_user.username} changed vote to "
-                    f"{selected_choice.choice_text} "
-                    f"in poll {question.id} from {ip_address}")
+                    f"{selected_choice.choice_text} ({selected_choice.id}) "
+                    f"in poll {question.id}")
     except Vote.DoesNotExist:
         # Create a new vote if the user hasn't voted yet
         _vote = Vote.objects.create(user=this_user, choice=selected_choice)
         messages.success(request, f"You voted for "
                          f"{selected_choice.choice_text}.")
         logger.info(f"{this_user.username} voted for "
-                    f"{selected_choice.choice_text} "
-                    f"in poll {question.id} from {ip_address}")
+                    f"{selected_choice.choice_text} ({selected_choice.id}) "
+                    f"in poll {question.id}")
 
     # Increment the vote count for the new choice
     selected_choice.vote_count = F('vote_count') + 1
