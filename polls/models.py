@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 from django.contrib import admin
@@ -57,13 +58,25 @@ class Choice(models.Model):
     Attributes:
         question (Question): The poll question that this choice belongs to.
         choice_text (str): The text of the choice.
-        votes (int): The number of votes the choice has received.
+        vote_count (int): The number of votes the choice has received.
     """
 
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    vote_count = models.IntegerField(default=0)
+
+    @property
+    def votes(self):
+        """Returns the number of time choice has been voted."""
+        return self.vote_set.count()
 
     def __str__(self) -> str:
         """Returns the string representation of the choice."""
         return str(self.choice_text)
+
+
+class Vote(models.Model):
+    """A vote by a user for a choice in a poll."""
+
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

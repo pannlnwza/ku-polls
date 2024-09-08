@@ -1,0 +1,35 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}KU Poll{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+
+    <!-- Block for additional styles or scripts -->
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Common header for all pages -->
+    <header>
+        <h1 class="ku-polls">KU Polls</h1>
+        {% if user.is_authenticated %}
+            Welcome back, {{ user.username }}
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" aria-label="Log Out">Log Out</button>
+            </form>
+        {% else %}
+            Please <a href="{% url 'login' %}?next={{request.path}}">Login</a>
+        {% endif %}
+    </header>
+
+    <!-- Main content block -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Common footer for all pages -->
+    <footer>
+        <!-- Footer content -->
+    </footer>
+</body>
