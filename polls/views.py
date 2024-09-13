@@ -64,7 +64,6 @@ class DetailView(generic.DetailView):
                                   message if the question is not published.
             HttpResponse: Renders the results page.
         """
-        # Get the question object
         try:
             self.object = get_object_or_404(Question, pk=kwargs["pk"])
         except Http404:
