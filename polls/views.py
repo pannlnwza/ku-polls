@@ -5,12 +5,13 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import F
 from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.dispatch import receiver
 
 import logging
-from .models import Choice, Question, Vote
+from polls.models import Choice, Question, Vote
 
 
 class IndexView(generic.ListView):
@@ -27,10 +28,11 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
+        """Return the published questions (not including those set to be
+        published in the future)."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:5]
+        ).order_by('-pub_date')
 
 
 class DetailView(generic.DetailView):
@@ -63,7 +65,12 @@ class DetailView(generic.DetailView):
             HttpResponse: Renders the results page.
         """
         # Get the question object
-        self.object = self.get_object()
+        try:
+            self.object = get_object_or_404(Question, pk=kwargs["pk"])
+        except Http404:
+            messages.error(request,
+                           f"Poll number {kwargs['pk']} does not exist.")
+            return redirect("polls:index")
 
         # Check if voting is allowed
         if not self.object.can_vote():
@@ -156,6 +163,8 @@ def vote(request, question_id):
                        f"unavailable poll ({question_id}) from {ip_address}")
         return redirect("polls:index")
 
+
+
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
@@ -230,3 +239,16 @@ def user_login_failed(sender, credentials, request, **kwargs):
     logger = logging.getLogger('polls')
     logger.warning(f"Failed login attempt for user "
                    f"{credentials.get('username')} from {ip}")
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account created successfully!")
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
