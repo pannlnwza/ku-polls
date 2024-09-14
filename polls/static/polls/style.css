@@ -6,4 +6,78 @@ li a {
 body {
     background: white url("images/background.jpg") no-repeat;
     background-size: cover;
+    font-family: 'Roboto', sans-serif;
+}
+.success, .error {
+    padding: 10px;
+    color: white;
+    border-radius: 3px;
+    text-align: center;
+    display: block;
+    width: 90%;
+    margin: 10px 0;
+}
+
+.success {
+    background: green;
+}
+
+.error {
+    background: darkred;
+}
+
+.error-message {
+    padding: 10px;
+    background-color: darkred;
+    color: white;
+    display: inline-block;
+    border-radius: 3px;
+    width: auto;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.view-button, .submit-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #008cba;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #0079a1;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.view-button:hover, .submit-button:hover {
+    background-color: #005f73;
+    transform: scale(1.05);
+}
+
+.view-button:active, .submit-button:active {
+    background-color: #003545;
+    transform: scale(1);
+}
+
+
+.view-button:disabled, .submit-button:disabled {
+    background-color: #cccccc;
+    border: 1px solid #aaaaaa;
+    cursor: not-allowed;
+}
+
+.vote-button {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.vote-button:hover {
+    background-color: #218838;
+    transform: scale(1.05)
 }
