@@ -48,9 +48,10 @@
    python manage.py migrate
    ```
    
-7. Load fixture data
+7. Load fixture data and static files
    ```shell
    python manage.py loaddata data/polls-v4.json data/users.json data/votes-v4.json
+   python manage.py collectstatic
    ```
    Note: If you don't need the poll questions or users data you don't have to load the data.
    
