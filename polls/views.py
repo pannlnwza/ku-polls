@@ -28,8 +28,10 @@ class IndexView(generic.ListView):
     context_object_name = 'question_list'
 
     def get_queryset(self):
-        """Return the published questions (not including those set to be
-        published in the future)."""
+        """
+        Return the published questions (not including those set to be
+        published in the future).
+        """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')
@@ -77,7 +79,7 @@ class DetailView(generic.DetailView):
             return redirect('polls:index')
 
         return self.render_to_response(self.get_context_data(
-                                        object=self.object))
+                                       object=self.object))
 
     def get_context_data(self, **kwargs):
         """Adds the previous choice of the user to the context data."""
@@ -162,8 +164,6 @@ def vote(request, question_id):
                        f"unavailable poll ({question_id}) from {ip_address}")
         return redirect("polls:index")
 
-
-
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
@@ -241,6 +241,12 @@ def user_login_failed(sender, credentials, request, **kwargs):
 
 
 def signup_view(request):
+    """
+    Handle the user signup process.
+
+    Returns:
+        HttpResponse: The rendered signup page with the form or a redirect to the login page.
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():

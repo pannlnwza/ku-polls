@@ -27,8 +27,7 @@ class Question(models.Model):
     def can_vote(self):
         """Returns True if voting is allowed."""
         now = timezone.now()
-        return (self.pub_date <= now and
-                (self.end_date is None or now <= self.end_date))
+        return self.pub_date <= now and (self.end_date is None or now <= self.end_date)
 
     def __str__(self) -> str:
         """Returns the string of the question."""
