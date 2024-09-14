@@ -50,10 +50,11 @@
    
 7. Load fixture data
    ```shell
-   python manage.py loaddata data/polls.json 
-   python manage.py loaddata data/users.json
+   python manage.py loaddata data/polls-v4.json data/users.json data/votes-v4.json
    ```
+   Note: If you don't need the poll questions or users data you don't have to load the data.
    
+
 8. Run tests
    ```shell
    python manage.py test
