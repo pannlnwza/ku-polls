@@ -12,7 +12,7 @@ https://cpske.github.io/ISP) course at [Kasetsart University](https://www.ku.ac.
 
 ## Installation
 
-To be added. If the procedure is long, put it in the wiki or a separate file.
+Check the instruction [here](./Installation.md).
 
 ## Running the Application
 
@@ -53,6 +53,14 @@ To exit the virtual environment type:
    ```bash
    deactivate
    ```
+
+## Demo User Accounts
+| Username | Password |
+|----------|----------|
+| demo1    | hackme11 |
+| demo2    | hackme22 |
+| demo3    | hackme33 |
+
 ## Project Documents
 
 All project documents are in the [Project Wiki](../../wiki/Home).
@@ -61,8 +69,11 @@ All project documents are in the [Project Wiki](../../wiki/Home).
 - [Requirements](../../wiki/Requirements)
 - [Project Plan](../../wiki/Project%20Plan)
 - [Domain Model](../../wiki/Domain%20Model)
-- [Iteration 1 Plan](../../wiki/Iteration%201%20Plan)
-- [Iteration 2 Plan](../../wiki/Iteration%202%20Plan)
-- [Iteration 3 Plan](../../wiki/Iteration%203%20Plan)
+
+- Iteration Plans
+  - [Iteration 1 Plan](../../wiki/Iteration%201%20Plan)
+  - [Iteration 2 Plan](../../wiki/Iteration%202%20Plan)
+  - [Iteration 3 Plan](../../wiki/Iteration%203%20Plan)
+  - [Iteration 4 Plan](../../wiki/Iteration%204%20Plan)
 
   
