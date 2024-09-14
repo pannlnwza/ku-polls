@@ -1,25 +1,76 @@
 {% extends 'polls/base.html' %}
 
 {% block title %}Poll Detail{% endblock %}
+{% block extra_head %}
+<style>
+    .poll-detail-container {
+        margin: 0 auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        width: 30%;
+    }
+    fieldset {
+        border: none;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    legend h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+    .choice-item {
+        margin-top: 20px;
+    }
+    .choice-label {
+        font-size: 1.1em;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+    input[type="radio"] {
+        transform: scale(1.2);
+        margin-right: 10px;
+    }
+    .form-actions {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+</style>
+{% endblock %}
 
 {% block content %}
+<div class="poll-detail-container">
     <form action="{% url 'polls:vote' question.id %}" method="post">
         {% csrf_token %}
         <fieldset>
             <legend><h1>{{ question.question_text }}</h1></legend>
-            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+            {% if error_message %}
+                <p class="error-message"><strong>{{ error_message }}</strong></p>
+            {% endif %}
+
             {% for choice in question.choice_set.all %}
-                <input type="radio" name="choice" id="choice{{ forloop.counter }}"
-                       value="{{ choice.id }}"
-                       {% if previous_choice and choice.id == previous_choice.id %}checked{% endif %}>
-                <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+                <div class="choice-item">
+                    <input type="radio" name="choice" id="choice{{ forloop.counter }}"
+                           value="{{ choice.id }}"
+                           {% if previous_choice and choice.id == previous_choice.id %}checked{% endif %}>
+                    <label for="choice{{ forloop.counter }}" class="choice-label">{{ choice.choice_text }}</label>
+                </div>
             {% endfor %}
         </fieldset>
-        <input type="submit" value="Vote">
+
+        <div class="form-actions">
+            <input type="submit" value="Vote" class="vote-button">
+        </div>
     </form>
 
     <div class="card-actions">
         <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
         <a href="{% url 'polls:results' question.id %}" class="view-button">View Results</a>
     </div>
+</div>
 {% endblock %}
+
+

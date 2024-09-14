@@ -3,23 +3,51 @@
 
 {% block extra_head %}
     <style>
-        .success {
-            padding: 10px;
-            background: green;
-            color: white;
-            display: inline-block; /* Makes the box fit the content width */
-            border-radius: 3px;
-            width: 30%;
-            text-align: center;
+        .container {
+            margin: 50px;
+            padding: 20px;
+            width: 50%;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .error {
+        .polls-list {
+            max-height: 700px;
+            overflow-y: scroll;
             padding: 10px;
-            background: darkred;
-            color: white;
-            display: inline-block; /* Makes the box fit the content width */
-            border-radius: 3px;
-            width: 30%;
-            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            margin: 0 auto;
+        }
+        .polls-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .polls-list::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 5px;
+        }
+        .polls-list::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+        .card {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .card-title {
+            margin-top: 10px;
+        }
+        .card-actions {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .no-polls {
+            font-size: 1.2em;
+            color: #333;
         }
     </style>
 {% endblock %}
@@ -35,8 +63,8 @@
     {% endif %}
 
     <div class="polls-list">
-        {% if latest_question_list %}
-            {% for question in latest_question_list %}
+        {% if question_list %}
+            {% for question in question_list %}
                 <div class="card">
                     <h2 class="card-title">{{ question.question_text }}</h2>
                     <p>Status: {{ question.can_vote|yesno:"Open ✅,Closed ❌" }}</p>
