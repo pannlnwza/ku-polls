@@ -1,0 +1,290 @@
+[
+{
+  "model": "polls.question",
+  "pk": 3,
+  "fields": {
+    "question_text": "What’s the best way to eat eggs?",
+    "pub_date": "2024-08-24T17:30:53Z",
+    "end_date": null
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 4,
+  "fields": {
+    "question_text": "What's the best pizza topping?",
+    "pub_date": "2024-08-24T17:38:49Z",
+    "end_date": "2024-09-14T10:49:02Z"
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 5,
+  "fields": {
+    "question_text": "Which imaginary creature would make the best pet?",
+    "pub_date": "2024-09-01T09:06:29Z",
+    "end_date": "2025-09-01T09:10:59Z"
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 6,
+  "fields": {
+    "question_text": "Future Question",
+    "pub_date": "2069-09-01T09:13:38Z",
+    "end_date": "6969-09-01T09:13:51Z"
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 7,
+  "fields": {
+    "question_text": "If you could only communicate using one emoji for a week, which one would it be?",
+    "pub_date": "2024-09-14T11:38:15Z",
+    "end_date": null
+  }
+},
+{
+  "model": "polls.question",
+  "pk": 8,
+  "fields": {
+    "question_text": "Which superhero power would you choose to use only for boring tasks?",
+    "pub_date": "2024-09-14T11:43:11Z",
+    "end_date": null
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 4,
+  "fields": {
+    "question": 3,
+    "choice_text": "Scrambled",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 5,
+  "fields": {
+    "question": 3,
+    "choice_text": "Fried",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 6,
+  "fields": {
+    "question": 3,
+    "choice_text": "Boiled",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 7,
+  "fields": {
+    "question": 3,
+    "choice_text": "Omelette",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 8,
+  "fields": {
+    "question": 3,
+    "choice_text": "Poached",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 9,
+  "fields": {
+    "question": 4,
+    "choice_text": "Pepperoni",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 10,
+  "fields": {
+    "question": 4,
+    "choice_text": "Hawaiian",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 11,
+  "fields": {
+    "question": 4,
+    "choice_text": "Mushrooms",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 12,
+  "fields": {
+    "question": 4,
+    "choice_text": "Margherita",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 13,
+  "fields": {
+    "question": 4,
+    "choice_text": "Vegetarian",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 14,
+  "fields": {
+    "question": 5,
+    "choice_text": "Dragon",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 15,
+  "fields": {
+    "question": 5,
+    "choice_text": "Unicorn",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 16,
+  "fields": {
+    "question": 5,
+    "choice_text": "Fairy",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 17,
+  "fields": {
+    "question": 5,
+    "choice_text": "Yeti",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 18,
+  "fields": {
+    "question": 5,
+    "choice_text": "Griffin",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 19,
+  "fields": {
+    "question": 5,
+    "choice_text": "Sphinx",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 20,
+  "fields": {
+    "question": 7,
+    "choice_text": "😂",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 21,
+  "fields": {
+    "question": 7,
+    "choice_text": "🤔",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 22,
+  "fields": {
+    "question": 7,
+    "choice_text": "🙈",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 23,
+  "fields": {
+    "question": 7,
+    "choice_text": "🤪",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 24,
+  "fields": {
+    "question": 7,
+    "choice_text": "😡",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 25,
+  "fields": {
+    "question": 7,
+    "choice_text": "🥺",
+    "vote_count": 1
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 26,
+  "fields": {
+    "question": 8,
+    "choice_text": "Teleportation to avoid traffic",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 27,
+  "fields": {
+    "question": 8,
+    "choice_text": "Super strength for carrying groceries",
+    "vote_count": 0
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 28,
+  "fields": {
+    "question": 8,
+    "choice_text": "Time travel to redo missed deadlines",
+    "vote_count": 2
+  }
+},
+{
+  "model": "polls.choice",
+  "pk": 29,
+  "fields": {
+    "question": 8,
+    "choice_text": "Invisibility to sneak out of class",
+    "vote_count": 0
+  }
+}
+]
