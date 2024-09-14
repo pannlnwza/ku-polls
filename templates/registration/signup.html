@@ -1,0 +1,113 @@
+<head>
+    <title>Sign Up</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background-color: white;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-box form {
+            display: flex;
+            flex-direction: column;
+        }
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-box button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .login-box button:hover {
+            background-color: #45a049;
+        }
+        .login-box p {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .login-box a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+        .login-box a:hover {
+            text-decoration: underline;
+        }
+        .success {
+            background-color: green;
+        }
+        .error {
+            background-color: darkred;
+        }
+        .form-errors {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .password-criteria {
+            font-size: 13px;
+            color: #555;
+            margin-left: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Sign Up</h2>
+
+            <!-- Display form errors -->
+            {% if form.errors %}
+                <div class="form-errors">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ field.label }}: {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.username.label_tag }} {{ form.username }}
+                {{ form.password1.label_tag }} {{ form.password1 }}
+                <div class="password-criteria">At least 8 characters long</div>
+                {{ form.password2.label_tag }} {{ form.password2 }}
+                <button type="submit">SIGN UP</button>
+            </form>
+            <p>Already registered? <a href="{% url 'login' %}">Login here</a></p>
+        </div>
+
+    </div>
+</body>

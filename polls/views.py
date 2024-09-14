@@ -5,12 +5,13 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import F
 from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.dispatch import receiver
 
 import logging
-from .models import Choice, Question, Vote
+from polls.models import Choice, Question, Vote
 
 
 class IndexView(generic.ListView):
@@ -24,13 +25,16 @@ class IndexView(generic.ListView):
     """
 
     template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
+    context_object_name = 'question_list'
 
     def get_queryset(self):
-        """Return the last five published questions."""
+        """
+        Return the published questions (not including those set to be
+        published in the future).
+        """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
-        ).order_by('-pub_date')[:5]
+        ).order_by('-pub_date')
 
 
 class DetailView(generic.DetailView):
@@ -62,8 +66,12 @@ class DetailView(generic.DetailView):
                                   message if the question is not published.
             HttpResponse: Renders the results page.
         """
-        # Get the question object
-        self.object = self.get_object()
+        try:
+            self.object = get_object_or_404(Question, pk=kwargs["pk"])
+        except Http404:
+            messages.error(request,
+                           f"Poll number {kwargs['pk']} does not exist.")
+            return redirect("polls:index")
 
         # Check if voting is allowed
         if not self.object.can_vote():
@@ -71,7 +79,7 @@ class DetailView(generic.DetailView):
             return redirect('polls:index')
 
         return self.render_to_response(self.get_context_data(
-                                        object=self.object))
+                                       object=self.object))
 
     def get_context_data(self, **kwargs):
         """Adds the previous choice of the user to the context data."""
@@ -230,3 +238,22 @@ def user_login_failed(sender, credentials, request, **kwargs):
     logger = logging.getLogger('polls')
     logger.warning(f"Failed login attempt for user "
                    f"{credentials.get('username')} from {ip}")
+
+
+def signup_view(request):
+    """
+    Handle the user signup process.
+
+    Returns:
+        HttpResponse: The rendered signup page with the form or a redirect to the login page.
+    """
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account created successfully!")
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'registration/signup.html', {'form': form})
