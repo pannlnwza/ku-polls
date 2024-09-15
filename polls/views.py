@@ -130,10 +130,11 @@ class ResultsView(generic.DetailView):
                            f"Poll number {kwargs['pk']} does not exist.")
             return redirect("polls:index")
 
-        # Return 404 if the question is not published
+        # Redirect to index page if the question is not published
         if not self.object.is_published():
-            raise Http404("Poll results are not available.")
-
+            messages.error(request,
+                           f"Poll number {kwargs['pk']} does not exist.")
+            return redirect("polls:index")
         return render(request, self.template_name, {"question": self.object})
 
 
