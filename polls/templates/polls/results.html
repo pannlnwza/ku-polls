@@ -44,12 +44,20 @@
     </style>
 {% endblock %}
 
-
-
 {% block content %}
     <h1>Results for "{{ question.question_text }}"</h1>
 
-    <!-- Results Table -->
+    <!-- Display messages -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <table class="results-table">
         <thead>
             <tr>
@@ -67,8 +75,8 @@
         </tbody>
     </table>
 
-<div class="card-actions">
-    <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
-</div>
+    <div class="card-actions">
+        <a href="{% url 'polls:index' %}" class="view-button">Back to Polls</a>
+    </div>
 
 {% endblock %}
