@@ -1,4 +1,9 @@
 [run]
+# measure branch coverage
+branch = True
+# don't measure python standard library (this should be the default)
+cover_pylib = False
+
 # Ignore files that are not relevant to coverage
 omit =
     # system libraries
@@ -14,6 +19,10 @@ omit =
     */__init__.py
     # django's migration files
     */migrations/*
+
+# explicitly include the main app
+include =
+    polls/*
 
 # Exclude specific lines from the coverage report
 [report]
