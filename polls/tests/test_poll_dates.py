@@ -1,3 +1,9 @@
+"""
+Tests for the Question model's date-related methods.
+
+This module includes tests to ensure the correct behavior of date-related methods
+in the Question model.
+"""
 import datetime
 from django.test import TestCase
 from django.utils import timezone
@@ -6,19 +12,18 @@ from polls.models import Question
 
 def create_question(question_text, days):
     """
-    Create a question with the given `question_text` and published the
-    given number of `days` offset to now (negative for questions published
-    in the past, positive for questions that have yet to be published).
+    Create a question with the given `question_text`.
+
+    It is published  with the specified number of `days`
+    offset from now (negative for past dates,
+    positive for future dates).
     """
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
 
 
 class PollDateTest(TestCase):
-    """
-    Test cases for the Question model's date-related methods to ensure
-    correct behavior.
-    """
+    """Test cases for the Question model's date-related methods."""
 
     def test_was_published_recently_with_future_question(self):
         """

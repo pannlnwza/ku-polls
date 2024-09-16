@@ -1,3 +1,11 @@
+"""
+Tests for the voting functionality in the polls app.
+
+This module contains test cases to verify that the voting behavior is
+consistent with the publication and end dates of questions. It includes
+tests for scenarios where voting is allowed or disallowed based on the
+question's pub_date and end_date.
+"""
 import datetime
 from django.test import TestCase
 from django.utils import timezone
@@ -6,9 +14,11 @@ from polls.models import Question
 
 def create_question(question_text, days):
     """
-    Create a question with the given `question_text` and published the
-    given number of `days` offset to now (negative for questions published
-    in the past, positive for questions that have yet to be published).
+    Create a question with the given question_text and publish it.
+
+    The given number of days offset from now (negative for questions
+    published in the past, positive for questions that have yet to be
+    published).
     """
     time = timezone.now() + datetime.timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)

@@ -1,3 +1,8 @@
+"""
+Tests for the views in the polls application.
+
+This module contains test cases for the IndexView, DetailView, and ResultsView.
+"""
 import datetime
 from django.test import TestCase
 from django.utils import timezone
@@ -16,14 +21,10 @@ def create_question(question_text, days):
 
 
 class QuestionIndexViewTests(TestCase):
-    """
-    Tests for the IndexView, which displays the list of questions.
-    """
+    """Tests for the IndexView, which displays the list of questions."""
 
     def test_no_questions(self):
-        """
-        If no questions exist, an appropriate message is displayed.
-        """
+        """If no questions exist, an appropriate message is displayed."""
         response = self.client.get(reverse('polls:index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No polls are available.")
@@ -65,9 +66,7 @@ class QuestionIndexViewTests(TestCase):
         )
 
     def test_two_past_questions(self):
-        """
-        The questions index page may display multiple questions.
-        """
+        """The questions index page may display multiple questions."""
         question1 = create_question(question_text="Past question 1.", days=-30)
         question2 = create_question(question_text="Past question 2.", days=-5)
         response = self.client.get(reverse('polls:index'))
@@ -78,9 +77,8 @@ class QuestionIndexViewTests(TestCase):
 
 
 class QuestionDetailViewTests(TestCase):
-    """
-    Tests  for the DetailView, which displays the details of a question.
-    """
+    """Tests for the DetailView, which displays the details of a question."""
+
     def test_future_question(self):
         """
         The detail view of a question with a pub_date in the future
@@ -112,9 +110,8 @@ class QuestionDetailViewTests(TestCase):
 
 
 class QuestionResultsViewTests(TestCase):
-    """
-    Test suite for the ResultsView, which displays the results of a question.
-    """
+    """Test suite for the ResultsView, which displays the results of a question."""
+
     def test_future_question(self):
         """
         The results view of a question with a pub_date in the future

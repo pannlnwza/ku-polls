@@ -1,5 +1,13 @@
-import datetime
+"""
+Defines models for the application.
 
+This module includes the following models:
+- Question: Represents a poll question.
+- Choice: Represents a choice for a specific poll question.
+- Vote: Represents a vote by a user for a choice in a poll.
+"""
+
+import datetime
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
@@ -21,16 +29,16 @@ class Question(models.Model):
     end_date = models.DateTimeField('date ended', null=True, blank=True)
 
     def is_published(self):
-        """Returns True if the current date is on or after the pub_date."""
+        """Return True if the current date is on or after the pub_date."""
         return timezone.now() >= self.pub_date
 
     def can_vote(self):
-        """Returns True if voting is allowed."""
+        """Return True if voting is allowed."""
         now = timezone.now()
         return self.pub_date <= now and (self.end_date is None or now <= self.end_date)
 
     def __str__(self) -> str:
-        """Returns the string of the question."""
+        """Return the string of the question."""
         return str(self.question_text)
 
     @admin.display(
@@ -40,7 +48,7 @@ class Question(models.Model):
     )
     def was_published_recently(self) -> bool:
         """
-        Determines if the question was published within the last day.
+        Determine if the question was published within the last day.
 
         Returns:
             bool: True if the question was published within the last day,
@@ -52,7 +60,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """
-    Represents a choice for the specific poll question.
+    Represent a choice for the specific poll question.
 
     Attributes:
         question (Question): The poll question that this choice belongs to.
@@ -66,11 +74,11 @@ class Choice(models.Model):
 
     @property
     def votes(self):
-        """Returns the number of time choice has been voted."""
+        """Return the number of time choice has been voted."""
         return self.vote_set.count()
 
     def __str__(self) -> str:
-        """Returns the string representation of the choice."""
+        """Return the string representation of the choice."""
         return str(self.choice_text)
 
 
