@@ -16,43 +16,11 @@ Check the instruction [here](./Installation.md).
 
 ## Running the Application
 
-Activate the virtual environment using one of the following commands, depending on your operating system:
-
+Start the Django server (Access the web browser at <http://localhost:8000>.)
 ```shell
-python -m venv env
-```
-- **Windows:**
-
-  ```bash
-  env\Scripts\activate
-  ```
-
-- **macOS/Linux:**
-
-    ```bash
-    source env/bin/activate
-    ```
-
-Once the virtual environment is activated, install the required packages using pip:
-```bash
-pip install -r requirements.txt
-```
-
-Load the poll data from file:
-```bash
-python manage.py loaddata data/<filename>
-```
-
-Start the Django development server (Access the web browser at <http://localhost:8000>.)
-```bash
 python manage.py runserver
  ```
 
-
-To exit the virtual environment type:
-   ```bash
-   deactivate
-   ```
 
 ## Demo User Accounts
 | Username | Password |
