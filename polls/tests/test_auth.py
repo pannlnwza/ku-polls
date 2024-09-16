@@ -1,3 +1,9 @@
+"""
+Tests for user authentication and voting functionality in the polls application.
+
+This module contains test cases for verifying the login, logout, and voting
+features of the polls app.
+"""
 import django.test
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -6,11 +12,10 @@ from mysite import settings
 
 
 class UserAuthTest(django.test.TestCase):
-    """
-    Test cases for user authentication and voting functionality in the polls app.
-    """
+    """Test cases for user authentication and voting functionality in the polls app."""
 
     def setUp(self):
+        """Set up test environment, including creating a test user and poll question."""
         # superclass setUp creates a Client object and initializes test database
         super().setUp()
         self.username = "testuser"
@@ -33,13 +38,7 @@ class UserAuthTest(django.test.TestCase):
         self.choice2 = self.question.choice_set.last()
 
     def test_logout(self):
-        """A user can logout using the logout url.
-
-        As an authenticated user,
-        when I visit /accounts/logout/
-        then I am logged out
-        and then redirected to the login page.
-        """
+        """Test user logout functionality."""
         logout_url = reverse("logout")
         # Authenticate the user.
         # We want to logout this user, so we need to associate the
@@ -57,7 +56,7 @@ class UserAuthTest(django.test.TestCase):
         self.assertRedirects(response, reverse(settings.LOGOUT_REDIRECT_URL))
 
     def test_login_view(self):
-        """A user can login using the login view."""
+        """Test the login view."""
         login_url = reverse("login")
         # Can get the login page
         response = self.client.get(login_url)
@@ -74,13 +73,7 @@ class UserAuthTest(django.test.TestCase):
         self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL))
 
     def test_auth_required_to_vote(self):
-        """Authentication is required to submit a vote.
-
-        As an unauthenticated user,
-        when I submit a vote for a question,
-        then I am redirected to the login page
-        or I receive a 403 response (FORBIDDEN)
-        """
+        """Authentication is required to submit a vote."""
         vote_url = reverse('polls:vote', args=[self.question.id])
 
         # what choice to vote for?
@@ -104,8 +97,9 @@ class UserAuthTest(django.test.TestCase):
 
     def test_user_can_change_vote_during_voting_period(self):
         """
-        A user can change their vote during the voting period,
-        and the new vote replaces the old vote.
+        A user can change their vote during the voting period.
+
+        The new vote replaces the old vote.
         """
         # Log in the user
         self.client.login(username=self.username, password=self.password)

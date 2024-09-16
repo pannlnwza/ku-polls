@@ -1,3 +1,9 @@
+"""
+Views for the polls application.
+
+This module contains view classes and functions to handle requests for
+the polls app.
+"""
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
@@ -29,8 +35,9 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """
-        Return the published questions (not including those set to be
-        published in the future).
+        Return the published questions.
+
+        Not including those set to be published in the future.
         """
         return Question.objects.filter(
             pub_date__lte=timezone.now()
@@ -82,7 +89,7 @@ class DetailView(generic.DetailView):
                                        object=self.object))
 
     def get_context_data(self, **kwargs):
-        """Adds the previous choice of the user to the context data."""
+        """Add the previous choice of the user to the context data."""
         context = super().get_context_data(**kwargs)
         question = self.object
         this_user = self.request.user
@@ -113,7 +120,7 @@ class ResultsView(generic.DetailView):
 
     def get(self, request, *args, **kwargs):
         """
-        Handles GET requests for displaying the results of a question.
+        Handle GET requests for displaying the results of a question.
 
         Args:
             request: The HTTP request object.
@@ -141,7 +148,7 @@ class ResultsView(generic.DetailView):
 @login_required
 def vote(request, question_id):
     """
-    Handles voting for a specific question.
+    Handle voting for a specific question.
 
     Args:
         request: The HTTP request object.
@@ -207,7 +214,7 @@ def vote(request, question_id):
 
 
 def get_client_ip(request):
-    """Retrieves the client's IP address from the request."""
+    """Retrieve the client's IP address from the request."""
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[0]
@@ -218,7 +225,7 @@ def get_client_ip(request):
 
 @receiver(user_logged_in)
 def user_login(sender, request, user, **kwargs):
-    """Logs a message when a user logs in."""
+    """Log a message when a user logs in."""
     ip = get_client_ip(request)
     logger = logging.getLogger('polls')
     logger.info(f"User {user.username} logged in from {ip}")
@@ -226,7 +233,7 @@ def user_login(sender, request, user, **kwargs):
 
 @receiver(user_logged_out)
 def user_logout(sender, request, user, **kwargs):
-    """Logs a message when a user logs out."""
+    """Log a message when a user logs out."""
     ip = get_client_ip(request)
     logger = logging.getLogger('polls')
     logger.info(f"User {user.username} logged out from {ip}")
@@ -234,7 +241,7 @@ def user_logout(sender, request, user, **kwargs):
 
 @receiver(user_login_failed)
 def user_login_failed(sender, credentials, request, **kwargs):
-    """Logs a message when a user login attempt fails."""
+    """Log a message when a user login attempt fails."""
     ip = get_client_ip(request)
     logger = logging.getLogger('polls')
     logger.warning(f"Failed login attempt for user "
